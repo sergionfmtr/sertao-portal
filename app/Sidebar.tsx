@@ -26,7 +26,7 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/agendamentos"
+              href="/consultas"
               className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
             >
               Agendamentos
