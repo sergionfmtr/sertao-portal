@@ -17,7 +17,8 @@ interface Agendamento {
 
 async function getDashboardData(): Promise<DashboardData | null> {
   try {
-    const response = await fetch("http://localhost:8080/dashboard", {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/dashboard`, {
       cache: "no-store",
     });
     if (!response.ok) {
@@ -32,12 +33,10 @@ async function getDashboardData(): Promise<DashboardData | null> {
 
 async function getUltimosAgendamentos(): Promise<Agendamento[]> {
   try {
-    const response = await fetch(
-      "http://localhost:8080/dashboard/ultimos-agendamentos",
-      {
-        cache: "no-store",
-      },
-    );
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/dashboard/ultimos-agendamentos`, {
+      cache: "no-store",
+    });
     if (!response.ok) {
       return [];
     }
