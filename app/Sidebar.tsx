@@ -13,7 +13,7 @@ export default function Sidebar() {
               href="/"
               className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
             >
-              Dashboard
+              Início
             </Link>
           </li>
           <li>
@@ -34,10 +34,10 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/prontuarios"
+              href="/medicos"
               className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
             >
-              Prontuários
+              Medicos
             </Link>
           </li>
         </ul>
