@@ -16,4 +16,11 @@ services:
     environment:
       - NODE_ENV=development
       - NEXT_TELEMETRY_DISABLED=1
+      - API_URL=http://clinica-sertao-api:8080
     restart: unless-stopped
+    networks:
+      - clinica-network
+
+networks:
+  clinica-network:
+    external: true
