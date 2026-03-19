@@ -96,10 +96,16 @@ async function getAppointments(
       url.searchParams.append("medicoId", doctorId);
     }
     if (startDate) {
-      url.searchParams.append("dataInicial", `${startDate}T00:00:00`);
+      let formattedStart = startDate;
+      if (startDate.length === 10) formattedStart = `${startDate}T00:00:00`;
+      else if (startDate.length === 16) formattedStart = `${startDate}:00`;
+      url.searchParams.append("dataInicial", formattedStart);
     }
     if (endDate) {
-      url.searchParams.append("dataFinal", `${endDate}T23:59:59`);
+      let formattedEnd = endDate;
+      if (endDate.length === 10) formattedEnd = `${endDate}T23:59:59`;
+      else if (endDate.length === 16) formattedEnd = `${endDate}:00`;
+      url.searchParams.append("dataFinal", formattedEnd);
     }
 
     const response = await fetch(url.toString(), {
@@ -320,7 +326,7 @@ export default async function ConsultasList({
                 Data Início
               </label>
               <input
-                type="date"
+                type="datetime-local"
                 id="startDate"
                 name="startDate"
                 defaultValue={resolvedStartDate}
@@ -332,7 +338,7 @@ export default async function ConsultasList({
                 Data Fim
               </label>
               <input
-                type="date"
+                type="datetime-local"
                 id="endDate"
                 name="endDate"
                 defaultValue={resolvedEndDate}
