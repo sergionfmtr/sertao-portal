@@ -8,6 +8,7 @@ Para que a aplicação consiga se comunicar com o backend, você pode criar um a
 
 ```env
 API_URL=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 _(Se a variável não for definida, o sistema usará `http://localhost:8080` como padrão)._

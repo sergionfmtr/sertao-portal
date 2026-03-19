@@ -16,11 +16,21 @@ export default function ConsultasActionButtons({ id }: { id: number }) {
     if (!confirmDelete) return;
 
     try {
-      // Quando for ligar a exclusão real na API, você utilizará a sua variável de ambiente do cliente:
-      // const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-      // await fetch(`${baseUrl}/consultas/${id}`, { method: 'DELETE' });
+      const rawBaseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+      // Remove a barra "/" do final da URL, caso exista, para não dar conflito
+      const baseUrl = rawBaseUrl.endsWith("/")
+        ? rawBaseUrl.slice(0, -1)
+        : rawBaseUrl;
 
-      // O router.refresh() faz o Server Component pai (ConsultasList) rodar novamente e buscar os dados mais atualizados!
+      const response = await fetch(`${baseUrl}/consultas/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao excluir a consulta na API.");
+      }
+
       router.refresh();
     } catch (err) {
       console.error("Erro ao excluir consulta", err);
