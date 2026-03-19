@@ -1,6 +1,8 @@
 import Link from "next/link";
 import SpecialtySelect from "./SpecialtySelect";
 import { Suspense } from "react";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 interface Patient {
   id: number;
@@ -70,6 +72,48 @@ async function getDoctors(specialtyId?: string): Promise<Doctor[]> {
   }
 }
 
+async function createAppointmentAction(formData: FormData) {
+  "use server";
+
+  const patientId = formData.get("patientId");
+  const specialtyId = formData.get("specialtyId");
+  const doctorId = formData.get("doctorId");
+  const appointmentDate = formData.get("appointmentDate");
+
+  if (!patientId || !specialtyId || !doctorId || !appointmentDate) {
+    throw new Error("Todos os campos são obrigatórios.");
+  }
+
+  const dateStr = appointmentDate.toString();
+  // O input datetime-local gera o formato "YYYY-MM-DDTHH:mm".
+  // Adicionamos os segundos (":00") para garantir conformidade com o formato esperado pela API.
+  const formattedDate = dateStr.length === 16 ? `${dateStr}:00` : dateStr;
+
+  const payload = {
+    medicoId: Number(doctorId),
+    pacienteId: Number(patientId),
+    especialidadeId: Number(specialtyId),
+    dataConsulta: formattedDate,
+    status: "AGENDADA",
+  };
+
+  const apiUrl = process.env.API_URL || "http://localhost:8080";
+  const response = await fetch(`${apiUrl}/consultas`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao salvar consulta.");
+  }
+
+  revalidatePath("/consultas");
+  redirect("/consultas");
+}
+
 interface ConsultasCadastroProps {
   specialtyId?: string;
 }
@@ -85,7 +129,7 @@ export default async function ConsultasCadastro({
 
   return (
     <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
-      <form className="space-y-6">
+      <form action={createAppointmentAction} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="flex flex-col w-full">
             <label
@@ -98,6 +142,7 @@ export default async function ConsultasCadastro({
               id="patientId"
               name="patientId"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              required
             >
               <option value="">Selecione um paciente...</option>
               {patients.map((patient) => (
@@ -138,6 +183,7 @@ export default async function ConsultasCadastro({
               id="doctorId"
               name="doctorId"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              required
             >
               <option value="">Selecione um médico...</option>
               {doctors.map((doctor) => (
@@ -160,6 +206,7 @@ export default async function ConsultasCadastro({
               id="appointmentDate"
               name="appointmentDate"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              required
             />
           </div>
         </div>
