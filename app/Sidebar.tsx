@@ -50,6 +50,14 @@ export default function Sidebar() {
               Especialidades
             </Link>
           </li>
+          <li>
+            <Link
+              href="/relatorios"
+              className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Relatorios
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="p-4 border-t border-gray-200 text-sm text-gray-500 text-center">
