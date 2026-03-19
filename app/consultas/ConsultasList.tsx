@@ -9,6 +9,7 @@ interface Medico {
 interface Paciente {
   id: number;
   name: string;
+  cpf: string;
 }
 
 interface Especialidade {
@@ -57,6 +58,22 @@ async function getEspecialidades(): Promise<Especialidade[]> {
   }
 }
 
+async function getPacientes(): Promise<Paciente[]> {
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/pacientes`, {
+      cache: "no-store", // Evita cache para garantir que os dados estejam sempre atualizados
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Erro ao buscar pacientes:", error);
+    return [];
+  }
+}
+
 async function getConsultas(): Promise<Consulta[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -74,16 +91,38 @@ async function getConsultas(): Promise<Consulta[]> {
 }
 
 export default async function ConsultasList() {
-  const [consultas, medicos, especialidades] = await Promise.all([
+  const [consultas, medicos, especialidades, pacientes] = await Promise.all([
     getConsultas(),
     getMedicos(),
     getEspecialidades(),
+    getPacientes(),
   ]);
 
   return (
     <div className="space-y-6">
       {/* Filtros */}
       <div className="flex flex-col sm:flex-row gap-4">
+        {/* Combobox de Pacientes */}
+        <div className="flex flex-col w-full max-w-sm">
+          <label
+            htmlFor="paciente-select"
+            className="mb-1 text-sm font-semibold text-gray-700"
+          >
+            Paciente
+          </label>
+          <select
+            id="paciente-select"
+            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+          >
+            <option value="">Selecione um paciente...</option>
+            {pacientes.map((paciente) => (
+              <option key={paciente.id} value={paciente.id}>
+                {paciente.name} - {paciente.cpf}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Combobox de Especialidades */}
         <div className="flex flex-col w-full max-w-sm">
           <label
