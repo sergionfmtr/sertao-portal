@@ -18,13 +18,20 @@ interface Specialty {
   nome: string;
 }
 
+export type AppointmentStatus =
+  | "AGENDADA"
+  | "CONFIRMADA"
+  | "EM_ATENDIMENTO"
+  | "REALIZADA"
+  | "CANCELADA";
+
 interface Appointment {
   id: number;
   medico: Doctor;
   paciente: Patient;
   especialidade: Specialty;
   dataConsulta: string;
-  status: string;
+  status: AppointmentStatus;
 }
 
 async function getDoctors(): Promise<Doctor[]> {
@@ -125,7 +132,7 @@ async function getAppointments(
   }
 }
 
-function getStatusStyles(status: string): string {
+function getStatusStyles(status: AppointmentStatus | string): string {
   switch (status) {
     case "AGENDADA":
       return "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10";
@@ -135,6 +142,8 @@ function getStatusStyles(status: string): string {
       return "bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20";
     case "REALIZADA":
       return "bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20";
+    case "CANCELADA":
+      return "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/10";
     default:
       return "bg-gray-50 text-gray-600 ring-1 ring-inset ring-gray-500/10";
   }
@@ -347,6 +356,7 @@ export default async function ConsultasList({
               <option value="CONFIRMADA">Confirmada</option>
               <option value="EM_ATENDIMENTO">Em Atendimento</option>
               <option value="REALIZADA">Realizada</option>
+              <option value="CANCELADA">Cancelada</option>
             </select>
           </div>
 

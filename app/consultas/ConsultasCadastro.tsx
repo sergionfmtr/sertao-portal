@@ -21,13 +21,20 @@ interface Doctor {
   crm: string;
 }
 
+export type AppointmentStatus =
+  | "AGENDADA"
+  | "CONFIRMADA"
+  | "EM_ATENDIMENTO"
+  | "REALIZADA"
+  | "CANCELADA";
+
 interface Appointment {
   id: number;
   medico: Doctor;
   paciente: Patient;
   especialidade: Specialty;
   dataConsulta: string;
-  status: string;
+  status: AppointmentStatus;
 }
 
 async function getPatients(): Promise<Patient[]> {
