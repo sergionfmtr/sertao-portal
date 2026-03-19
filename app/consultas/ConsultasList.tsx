@@ -244,122 +244,132 @@ export default async function ConsultasList({
         key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}-${resolvedStartDate || ""}-${resolvedEndDate || ""}`}
         method="GET"
         action="/consultas"
-        className="flex flex-row flex-wrap gap-4 items-end"
+        className="flex flex-row flex-wrap gap-4 items-end flex flex-col gap-4"
       >
-        {/* Combobox de Pacientes */}
-        <div className="flex flex-col w-full max-w-sm">
-          <label
-            htmlFor="patientId"
-            className="mb-1 text-sm font-semibold text-gray-700"
-          >
-            Paciente
-          </label>
-          <select
-            id="patientId"
-            name="patientId"
-            defaultValue={resolvedPatientId}
-            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-          >
-            <option value="">Selecione um paciente...</option>
-            {patients.map((patient) => (
-              <option key={patient.id} value={patient.id}>
-                {patient.name} - {patient.cpf}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className="flex flex-row flex-wrap gap-4 items-end">
+          {/* Combobox de Pacientes */}
+          <div className="flex flex-col w-full max-w-sm">
+            <label
+              htmlFor="patientId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Paciente
+            </label>
+            <select
+              id="patientId"
+              name="patientId"
+              defaultValue={resolvedPatientId}
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione um paciente...</option>
+              {patients.map((patient) => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.name} - {patient.cpf}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Combobox de Especialidades */}
-        <div className="flex flex-col w-full max-w-sm">
-          <label
-            htmlFor="specialtyId"
-            className="mb-1 text-sm font-semibold text-gray-700"
-          >
-            Especialidade
-          </label>
-          <select
-            id="specialtyId"
-            name="specialtyId"
-            defaultValue={resolvedSpecialtyId}
-            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-          >
-            <option value="">Selecione uma especialidade...</option>
-            {specialties.map((specialty) => (
-              <option key={specialty.id} value={specialty.id}>
-                {specialty.nome}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Combobox de Especialidades */}
+          <div className="flex flex-col w-full max-w-sm">
+            <label
+              htmlFor="specialtyId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Especialidade
+            </label>
+            <select
+              id="specialtyId"
+              name="specialtyId"
+              defaultValue={resolvedSpecialtyId}
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione uma especialidade...</option>
+              {specialties.map((specialty) => (
+                <option key={specialty.id} value={specialty.id}>
+                  {specialty.nome}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Combobox de Médicos */}
-        <div className="flex flex-col w-full max-w-sm">
-          <label
-            htmlFor="doctorId"
-            className="mb-1 text-sm font-semibold text-gray-700"
-          >
-            Médico
-          </label>
-          <select
-            id="doctorId"
-            name="doctorId"
-            defaultValue={resolvedDoctorId}
-            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-          >
-            <option value="">Selecione um médico...</option>
-            {doctors.map((doctor) => (
-              <option key={doctor.id} value={doctor.id}>
-                {doctor.nome} - {doctor.crm}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Combobox de Médicos */}
+          <div className="flex flex-col w-full max-w-sm">
+            <label
+              htmlFor="doctorId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Médico
+            </label>
+            <select
+              id="doctorId"
+              name="doctorId"
+              defaultValue={resolvedDoctorId}
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione um médico...</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.id}>
+                  {doctor.nome} - {doctor.crm}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Período Consultas */}
-        <div className="flex flex-col w-full max-w-sm">
-          <span className="mb-1 text-sm font-semibold text-gray-700">
-            Período Consultas
-          </span>
-          <div className="flex gap-2">
-            <div className="flex flex-col w-full">
-              <label htmlFor="startDate" className="sr-only">
-                Data Início
-              </label>
-              <input
-                type="datetime-local"
-                id="startDate"
-                name="startDate"
-                defaultValue={resolvedStartDate}
-                className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-              />
-            </div>
-            <div className="flex flex-col w-full">
-              <label htmlFor="endDate" className="sr-only">
-                Data Fim
-              </label>
-              <input
-                type="datetime-local"
-                id="endDate"
-                name="endDate"
-                defaultValue={resolvedEndDate}
-                className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-              />
+          {/* Período Consultas */}
+          <div className="flex flex-col w-full max-w-sm">
+            <span className="mb-1 text-sm font-semibold text-gray-700">
+              Período Consultas
+            </span>
+            <div className="flex gap-2">
+              <div className="flex flex-col w-full">
+                <label htmlFor="startDate" className="sr-only">
+                  Data Início
+                </label>
+                <input
+                  type="datetime-local"
+                  id="startDate"
+                  name="startDate"
+                  defaultValue={resolvedStartDate}
+                  className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label htmlFor="endDate" className="sr-only">
+                  Data Fim
+                </label>
+                <input
+                  type="datetime-local"
+                  id="endDate"
+                  name="endDate"
+                  defaultValue={resolvedEndDate}
+                  className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex w-full flex-row gap-2 sm:w-auto">
-          <button
-            type="submit"
-            className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-none"
-          >
-            Filtrar
-          </button>
+        <div className="flex w-full flex-col gap-4 sm:flex-row sm:justify-between">
+          <div className="flex flex-row gap-2 w-full sm:w-auto">
+            <button
+              type="submit"
+              className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-none"
+            >
+              Filtrar
+            </button>
+            <Link
+              href="/consultas"
+              className="flex-1 inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:flex-none"
+            >
+              Limpar
+            </Link>
+          </div>
           <Link
-            href="/consultas"
-            className="flex-1 inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:flex-none"
+            href="/consultas?action=new"
+            className="inline-flex items-center justify-center w-full sm:w-auto rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
           >
-            Limpar
+            Nova Consulta
           </Link>
         </div>
       </form>

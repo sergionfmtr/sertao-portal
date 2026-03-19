@@ -1,0 +1,175 @@
+import Link from "next/link";
+
+interface Patient {
+  id: number;
+  name: string;
+  cpf: string;
+}
+
+interface Specialty {
+  id: number;
+  nome: string;
+}
+
+interface Doctor {
+  id: number;
+  nome: string;
+  crm: string;
+}
+
+async function getPatients(): Promise<Patient[]> {
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/pacientes`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching patients:", error);
+    return [];
+  }
+}
+
+async function getSpecialties(): Promise<Specialty[]> {
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/especialidades`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching specialties:", error);
+    return [];
+  }
+}
+
+async function getDoctors(): Promise<Doctor[]> {
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/medicos`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+    return [];
+  }
+}
+
+export default async function ConsultasCadastro() {
+  const [patients, specialties, doctors] = await Promise.all([
+    getPatients(),
+    getSpecialties(),
+    getDoctors(),
+  ]);
+
+  return (
+    <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+      <form className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="flex flex-col w-full">
+            <label
+              htmlFor="patientId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Paciente
+            </label>
+            <select
+              id="patientId"
+              name="patientId"
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione um paciente...</option>
+              {patients.map((patient) => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label
+              htmlFor="specialtyId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Especialidade
+            </label>
+            <select
+              id="specialtyId"
+              name="specialtyId"
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione uma especialidade...</option>
+              {specialties.map((specialty) => (
+                <option key={specialty.id} value={specialty.id}>
+                  {specialty.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label
+              htmlFor="doctorId"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Médico
+            </label>
+            <select
+              id="doctorId"
+              name="doctorId"
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Selecione um médico...</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.id}>
+                  {doctor.nome} - {doctor.crm}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label
+              htmlFor="appointmentDate"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Data e Hora
+            </label>
+            <input
+              type="datetime-local"
+              id="appointmentDate"
+              name="appointmentDate"
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            />
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end border-t border-gray-100 pt-6">
+          <Link
+            href="/consultas"
+            className="inline-flex w-full items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:w-auto"
+          >
+            Cancelar
+          </Link>
+          <button
+            type="submit"
+            className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:w-auto"
+          >
+            Salvar Consulta
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
