@@ -5,15 +5,6 @@ export default function ConsultasPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-12 bg-gray-50 min-h-screen">
       <section>
-        <h1 className="mb-6 text-2xl font-semibold text-gray-900 tracking-tight">
-          Agendar Nova Consulta
-        </h1>
-        <div className="max-w-xl rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-          <AppointmentForm />
-        </div>
-      </section>
-
-      <section>
         <h2 className="mb-6 text-2xl font-semibold text-gray-900 tracking-tight">
           Consultas Disponíveis
         </h2>
