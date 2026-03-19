@@ -79,6 +79,8 @@ async function getAppointments(
   patientId?: string,
   specialtyId?: string,
   doctorId?: string,
+  startDate?: string,
+  endDate?: string,
 ): Promise<Appointment[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -92,6 +94,12 @@ async function getAppointments(
     }
     if (doctorId) {
       url.searchParams.append("medicoId", doctorId);
+    }
+    if (startDate) {
+      url.searchParams.append("dataInicial", `${startDate}T00:00:00`);
+    }
+    if (endDate) {
+      url.searchParams.append("dataFinal", `${endDate}T23:59:59`);
     }
 
     const response = await fetch(url.toString(), {
@@ -181,8 +189,20 @@ function AppointmentCard({ appointment }: AppointmentCardProps) {
 interface ConsultasListProps {
   patientId?: string;
   searchParams?:
-    | Promise<{ patientId?: string; specialtyId?: string; doctorId?: string }>
-    | { patientId?: string; specialtyId?: string; doctorId?: string };
+    | Promise<{
+        patientId?: string;
+        specialtyId?: string;
+        doctorId?: string;
+        startDate?: string;
+        endDate?: string;
+      }>
+    | {
+        patientId?: string;
+        specialtyId?: string;
+        doctorId?: string;
+        startDate?: string;
+        endDate?: string;
+      };
 }
 
 export default async function ConsultasList({
@@ -195,9 +215,17 @@ export default async function ConsultasList({
   const resolvedPatientId = patientId || resolvedSearchParams?.patientId;
   const resolvedSpecialtyId = resolvedSearchParams?.specialtyId;
   const resolvedDoctorId = resolvedSearchParams?.doctorId;
+  const resolvedStartDate = resolvedSearchParams?.startDate;
+  const resolvedEndDate = resolvedSearchParams?.endDate;
 
   const [appointments, doctors, specialties, patients] = await Promise.all([
-    getAppointments(resolvedPatientId, resolvedSpecialtyId, resolvedDoctorId),
+    getAppointments(
+      resolvedPatientId,
+      resolvedSpecialtyId,
+      resolvedDoctorId,
+      resolvedStartDate,
+      resolvedEndDate,
+    ),
     getDoctors(),
     getSpecialties(),
     getPatients(),
@@ -207,10 +235,10 @@ export default async function ConsultasList({
     <div className="space-y-6">
       {/* Filtros */}
       <form
-        key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}`}
+        key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}-${resolvedStartDate || ""}-${resolvedEndDate || ""}`}
         method="GET"
         action="/consultas"
-        className="flex flex-col sm:flex-row gap-4 items-end"
+        className="flex flex-row flex-wrap gap-4 items-end"
       >
         {/* Combobox de Pacientes */}
         <div className="flex flex-col w-full max-w-sm">
@@ -279,6 +307,39 @@ export default async function ConsultasList({
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Período Consultas */}
+        <div className="flex flex-col w-full max-w-sm">
+          <span className="mb-1 text-sm font-semibold text-gray-700">
+            Período Consultas
+          </span>
+          <div className="flex gap-2">
+            <div className="flex flex-col w-full">
+              <label htmlFor="startDate" className="sr-only">
+                Data Início
+              </label>
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                defaultValue={resolvedStartDate}
+                className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              />
+            </div>
+            <div className="flex flex-col w-full">
+              <label htmlFor="endDate" className="sr-only">
+                Data Fim
+              </label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                defaultValue={resolvedEndDate}
+                className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex w-full flex-row gap-2 sm:w-auto">
