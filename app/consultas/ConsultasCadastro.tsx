@@ -1,4 +1,6 @@
 import Link from "next/link";
+import SpecialtySelect from "./SpecialtySelect";
+import { Suspense } from "react";
 
 interface Patient {
   id: number;
@@ -49,10 +51,13 @@ async function getSpecialties(): Promise<Specialty[]> {
   }
 }
 
-async function getDoctors(): Promise<Doctor[]> {
+async function getDoctors(specialtyId?: string): Promise<Doctor[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
-    const response = await fetch(`${apiUrl}/medicos`, {
+    const url = specialtyId
+      ? `${apiUrl}/medicos/especialidade/${specialtyId}`
+      : `${apiUrl}/medicos`;
+    const response = await fetch(url, {
       cache: "no-store",
     });
     if (!response.ok) {
@@ -65,11 +70,17 @@ async function getDoctors(): Promise<Doctor[]> {
   }
 }
 
-export default async function ConsultasCadastro() {
+interface ConsultasCadastroProps {
+  specialtyId?: string;
+}
+
+export default async function ConsultasCadastro({
+  specialtyId,
+}: ConsultasCadastroProps) {
   const [patients, specialties, doctors] = await Promise.all([
     getPatients(),
     getSpecialties(),
-    getDoctors(),
+    getDoctors(specialtyId),
   ]);
 
   return (
@@ -104,18 +115,16 @@ export default async function ConsultasCadastro() {
             >
               Especialidade
             </label>
-            <select
-              id="specialtyId"
-              name="specialtyId"
-              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            <Suspense
+              fallback={
+                <div className="h-10 w-full rounded-md border border-gray-300 bg-gray-50"></div>
+              }
             >
-              <option value="">Selecione uma especialidade...</option>
-              {specialties.map((specialty) => (
-                <option key={specialty.id} value={specialty.id}>
-                  {specialty.nome}
-                </option>
-              ))}
-            </select>
+              <SpecialtySelect
+                specialties={specialties}
+                defaultValue={specialtyId}
+              />
+            </Suspense>
           </div>
 
           <div className="flex flex-col w-full">

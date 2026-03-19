@@ -24,7 +24,7 @@ export default async function ConsultasPage({
           {isNewAppointment ? "Nova Consulta" : "Consultas Disponíveis"}
         </h2>
         {isNewAppointment ? (
-          <ConsultasCadastro />
+          <ConsultasCadastro specialtyId={resolvedSearchParams?.specialtyId} />
         ) : (
           <ConsultasList searchParams={searchParams} />
         )}
