@@ -4,6 +4,9 @@ import SpecialtyChart, {
 import ConsultationStatusChart, {
   ConsultationStatusData,
 } from "./components/ConsultationStatusChart";
+import MonthlyEvolutionChart, {
+  MonthlyEvolutionData,
+} from "./components/MonthlyEvolutionChart";
 
 async function getSpecialtyReport(): Promise<SpecialtyReportData[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -42,10 +45,27 @@ async function getConsultationStatusReport(): Promise<
   return response.json();
 }
 
+async function getMonthlyEvolutionReport(): Promise<MonthlyEvolutionData[]> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+  const response = await fetch(`${baseUrl}/relatorio/evolucao-mensal`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      "Falha ao carregar os dados do relatório de evolução mensal.",
+    );
+  }
+
+  return response.json();
+}
+
 export default async function ReportsPage() {
-  const [specialtyData, statusData] = await Promise.all([
+  const [specialtyData, statusData, evolutionData] = await Promise.all([
     getSpecialtyReport(),
     getConsultationStatusReport(),
+    getMonthlyEvolutionReport(),
   ]);
 
   return (
@@ -75,6 +95,17 @@ export default async function ReportsPage() {
           </p>
 
           <ConsultationStatusChart data={statusData} />
+        </section>
+
+        <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-700">
+            Evolução Mensal
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Acompanhamento do volume de consultas ao longo dos dias do mês.
+          </p>
+
+          <MonthlyEvolutionChart data={evolutionData} />
         </section>
       </div>
     </main>
