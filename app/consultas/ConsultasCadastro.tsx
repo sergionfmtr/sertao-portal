@@ -106,8 +106,9 @@ async function saveAppointmentAction(formData: FormData) {
   const specialtyId = formData.get("specialtyId");
   const doctorId = formData.get("doctorId");
   const appointmentDate = formData.get("appointmentDate");
+  const status = formData.get("status");
 
-  if (!patientId || !specialtyId || !doctorId || !appointmentDate) {
+  if (!patientId || !specialtyId || !doctorId || !appointmentDate || !status) {
     throw new Error("Todos os campos são obrigatórios.");
   }
 
@@ -121,7 +122,7 @@ async function saveAppointmentAction(formData: FormData) {
     pacienteId: Number(patientId),
     especialidadeId: Number(specialtyId),
     dataConsulta: formattedDate,
-    status: "AGENDADA",
+    status: status.toString(),
   };
 
   const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -256,6 +257,28 @@ export default async function ConsultasCadastro({
               required
               defaultValue={defaultDate}
             />
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label
+              htmlFor="status"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+              required
+              defaultValue={appointment?.status || "AGENDADA"}
+            >
+              <option value="AGENDADA">Agendada</option>
+              <option value="CONFIRMADA">Confirmada</option>
+              <option value="EM_ATENDIMENTO">Em Atendimento</option>
+              <option value="REALIZADA">Realizada</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
           </div>
         </div>
 
