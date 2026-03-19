@@ -1,4 +1,5 @@
 import ConsultasActionButtons from "./ConsultasActionButtons";
+import Link from "next/link";
 
 interface Doctor {
   id: number;
@@ -206,6 +207,7 @@ export default async function ConsultasList({
     <div className="space-y-6">
       {/* Filtros */}
       <form
+        key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}`}
         method="GET"
         action="/consultas"
         className="flex flex-col sm:flex-row gap-4 items-end"
@@ -279,12 +281,20 @@ export default async function ConsultasList({
           </select>
         </div>
 
-        <button
-          type="submit"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
-          Filtrar
-        </button>
+        <div className="flex w-full flex-row gap-2 sm:w-auto">
+          <button
+            type="submit"
+            className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-none"
+          >
+            Filtrar
+          </button>
+          <Link
+            href="/consultas"
+            className="flex-1 inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:flex-none"
+          >
+            Limpar
+          </Link>
+        </div>
       </form>
 
       {appointments.length === 0 ? (
