@@ -21,6 +21,15 @@ interface Doctor {
   crm: string;
 }
 
+interface Appointment {
+  id: number;
+  medico: Doctor;
+  paciente: Patient;
+  especialidade: Specialty;
+  dataConsulta: string;
+  status: string;
+}
+
 async function getPatients(): Promise<Patient[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -72,9 +81,27 @@ async function getDoctors(specialtyId?: string): Promise<Doctor[]> {
   }
 }
 
-async function createAppointmentAction(formData: FormData) {
+async function getAppointment(id?: string): Promise<Appointment | null> {
+  if (!id) return null;
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/consultas/${id}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching appointment ${id}:`, error);
+    return null;
+  }
+}
+
+async function saveAppointmentAction(formData: FormData) {
   "use server";
 
+  const appointmentId = formData.get("appointmentId");
   const patientId = formData.get("patientId");
   const specialtyId = formData.get("specialtyId");
   const doctorId = formData.get("doctorId");
@@ -98,8 +125,13 @@ async function createAppointmentAction(formData: FormData) {
   };
 
   const apiUrl = process.env.API_URL || "http://localhost:8080";
-  const response = await fetch(`${apiUrl}/consultas`, {
-    method: "POST",
+  const url = appointmentId
+    ? `${apiUrl}/consultas/${appointmentId}`
+    : `${apiUrl}/consultas`;
+  const method = appointmentId ? "PUT" : "POST";
+
+  const response = await fetch(url, {
+    method,
     headers: {
       "Content-Type": "application/json",
     },
@@ -116,20 +148,33 @@ async function createAppointmentAction(formData: FormData) {
 
 interface ConsultasCadastroProps {
   specialtyId?: string;
+  appointmentId?: string;
 }
 
 export default async function ConsultasCadastro({
   specialtyId,
+  appointmentId,
 }: ConsultasCadastroProps) {
-  const [patients, specialties, doctors] = await Promise.all([
+  const [patients, specialties, appointment] = await Promise.all([
     getPatients(),
     getSpecialties(),
-    getDoctors(specialtyId),
+    getAppointment(appointmentId),
   ]);
+
+  const activeSpecialtyId =
+    specialtyId || appointment?.especialidade?.id?.toString();
+  const doctors = await getDoctors(activeSpecialtyId);
+
+  const defaultDate = appointment?.dataConsulta
+    ? appointment.dataConsulta.substring(0, 16)
+    : undefined;
 
   return (
     <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
-      <form action={createAppointmentAction} className="space-y-6">
+      <form action={saveAppointmentAction} className="space-y-6">
+        {appointment && (
+          <input type="hidden" name="appointmentId" value={appointment.id} />
+        )}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="flex flex-col w-full">
             <label
@@ -143,6 +188,7 @@ export default async function ConsultasCadastro({
               name="patientId"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
               required
+              defaultValue={appointment?.paciente?.id}
             >
               <option value="">Selecione um paciente...</option>
               {patients.map((patient) => (
@@ -167,7 +213,7 @@ export default async function ConsultasCadastro({
             >
               <SpecialtySelect
                 specialties={specialties}
-                defaultValue={specialtyId}
+                defaultValue={activeSpecialtyId}
               />
             </Suspense>
           </div>
@@ -184,6 +230,7 @@ export default async function ConsultasCadastro({
               name="doctorId"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
               required
+              defaultValue={appointment?.medico?.id}
             >
               <option value="">Selecione um médico...</option>
               {doctors.map((doctor) => (
@@ -207,6 +254,7 @@ export default async function ConsultasCadastro({
               name="appointmentDate"
               className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
               required
+              defaultValue={defaultDate}
             />
           </div>
         </div>

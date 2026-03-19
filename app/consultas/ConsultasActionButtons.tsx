@@ -6,8 +6,7 @@ export default function ConsultasActionButtons({ id }: { id: number }) {
   const router = useRouter();
 
   const handleEdit = () => {
-    // Aqui você implementaria a lógica/abertura de modal de edição
-    console.log(`Editar consulta ID: ${id}`);
+    router.push(`/consultas?action=edit&id=${id}`);
   };
 
   const handleDelete = async () => {
