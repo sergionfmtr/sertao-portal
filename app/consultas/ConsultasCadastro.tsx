@@ -101,7 +101,7 @@ async function getAppointment(id?: string): Promise<Appointment | null> {
 async function saveAppointmentAction(formData: FormData) {
   "use server";
 
-  const appointmentId = formData.get("appointmentId");
+  const idconsulta = formData.get("idconsulta");
   const patientId = formData.get("patientId");
   const specialtyId = formData.get("specialtyId");
   const doctorId = formData.get("doctorId");
@@ -125,10 +125,10 @@ async function saveAppointmentAction(formData: FormData) {
   };
 
   const apiUrl = process.env.API_URL || "http://localhost:8080";
-  const url = appointmentId
-    ? `${apiUrl}/consultas/${appointmentId}`
+  const url = idconsulta
+    ? `${apiUrl}/consultas/${idconsulta}`
     : `${apiUrl}/consultas`;
-  const method = appointmentId ? "PUT" : "POST";
+  const method = idconsulta ? "PUT" : "POST";
 
   const response = await fetch(url, {
     method,
@@ -173,7 +173,7 @@ export default async function ConsultasCadastro({
     <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
       <form action={saveAppointmentAction} className="space-y-6">
         {appointment && (
-          <input type="hidden" name="appointmentId" value={appointment.id} />
+          <input type="hidden" name="idconsulta" value={appointment.id} />
         )}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="flex flex-col w-full">
