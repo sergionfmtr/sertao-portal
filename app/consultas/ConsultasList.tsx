@@ -41,6 +41,22 @@ async function getMedicos(): Promise<Medico[]> {
   }
 }
 
+async function getEspecialidades(): Promise<Especialidade[]> {
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/especialidades`, {
+      cache: "no-store", // Evita cache para garantir que os dados estejam sempre atualizados
+    });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Erro ao buscar especialidades:", error);
+    return [];
+  }
+}
+
 async function getConsultas(): Promise<Consulta[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -58,32 +74,57 @@ async function getConsultas(): Promise<Consulta[]> {
 }
 
 export default async function ConsultasList() {
-  const [consultas, medicos] = await Promise.all([
+  const [consultas, medicos, especialidades] = await Promise.all([
     getConsultas(),
     getMedicos(),
+    getEspecialidades(),
   ]);
 
   return (
     <div className="space-y-6">
-      {/* Combobox de Médicos */}
-      <div className="flex flex-col">
-        <label
-          htmlFor="medico-select"
-          className="mb-1 text-sm font-semibold text-gray-700"
-        >
-          Médico
-        </label>
-        <select
-          id="medico-select"
-          className="block w-full max-w-sm rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
-        >
-          <option value="">Selecione um médico...</option>
-          {medicos.map((medico) => (
-            <option key={medico.id} value={medico.id}>
-              {medico.nome} - {medico.crm}
-            </option>
-          ))}
-        </select>
+      {/* Filtros */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        {/* Combobox de Especialidades */}
+        <div className="flex flex-col w-full max-w-sm">
+          <label
+            htmlFor="especialidade-select"
+            className="mb-1 text-sm font-semibold text-gray-700"
+          >
+            Especialidade
+          </label>
+          <select
+            id="especialidade-select"
+            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+          >
+            <option value="">Selecione uma especialidade...</option>
+            {especialidades.map((especialidade) => (
+              <option key={especialidade.id} value={especialidade.id}>
+                {especialidade.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Combobox de Médicos */}
+        <div className="flex flex-col w-full max-w-sm">
+          <label
+            htmlFor="medico-select"
+            className="mb-1 text-sm font-semibold text-gray-700"
+          >
+            Médico
+          </label>
+          <select
+            id="medico-select"
+            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+          >
+            <option value="">Selecione um médico...</option>
+            {medicos.map((medico) => (
+              <option key={medico.id} value={medico.id}>
+                {medico.nome} - {medico.crm}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {consultas.length === 0 ? (
