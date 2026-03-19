@@ -13,7 +13,21 @@ interface Agendamento {
     nome: string;
   };
   dataConsulta: string;
+  status: string;
 }
+
+const statusConfig: Record<string, { label: string; colorClass: string }> = {
+  AGENDADA: { label: "Agendada", colorClass: "bg-blue-100 text-blue-800" },
+  CONFIRMADA: {
+    label: "Confirmada",
+    colorClass: "bg-green-100 text-green-800",
+  },
+  EM_ATENDIMENTO: {
+    label: "Em Atendimento",
+    colorClass: "bg-yellow-100 text-yellow-800",
+  },
+  REALIZADA: { label: "Realizada", colorClass: "bg-gray-100 text-gray-800" },
+};
 
 async function getDashboardData(): Promise<DashboardData | null> {
   try {
@@ -113,9 +127,22 @@ export default async function Home() {
                     <p className="text-sm font-medium text-gray-800">
                       {agendamento.paciente.name}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {agendamento.especialidade.nome}
-                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-gray-500">
+                        {agendamento.especialidade.nome}
+                      </p>
+                      {agendamento.status && (
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                            statusConfig[agendamento.status]?.colorClass ||
+                            "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {statusConfig[agendamento.status]?.label ||
+                            agendamento.status}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="text-sm text-gray-600 font-medium text-right">
                     <div>{data.toLocaleDateString("pt-BR")}</div>
