@@ -81,6 +81,7 @@ async function getAppointments(
   doctorId?: string,
   startDate?: string,
   endDate?: string,
+  status?: string,
 ): Promise<Appointment[]> {
   try {
     const apiUrl = process.env.API_URL || "http://localhost:8080";
@@ -107,6 +108,9 @@ async function getAppointments(
       else if (endDate.length === 16) formattedEnd = `${endDate}:00`;
       url.searchParams.append("dataFinal", formattedEnd);
     }
+    if (status) {
+      url.searchParams.append("status", status);
+    }
 
     const response = await fetch(url.toString(), {
       cache: "no-store",
@@ -125,6 +129,10 @@ function getStatusStyles(status: string): string {
   switch (status) {
     case "AGENDADA":
       return "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10";
+    case "CONFIRMADA":
+      return "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-700/10";
+    case "EM_ATENDIMENTO":
+      return "bg-yellow-50 text-yellow-800 ring-1 ring-inset ring-yellow-600/20";
     case "REALIZADA":
       return "bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20";
     default:
@@ -201,6 +209,7 @@ interface ConsultasListProps {
         doctorId?: string;
         startDate?: string;
         endDate?: string;
+        status?: string;
       }>
     | {
         patientId?: string;
@@ -208,6 +217,7 @@ interface ConsultasListProps {
         doctorId?: string;
         startDate?: string;
         endDate?: string;
+        status?: string;
       };
 }
 
@@ -223,6 +233,7 @@ export default async function ConsultasList({
   const resolvedDoctorId = resolvedSearchParams?.doctorId;
   const resolvedStartDate = resolvedSearchParams?.startDate;
   const resolvedEndDate = resolvedSearchParams?.endDate;
+  const resolvedStatus = resolvedSearchParams?.status;
 
   const [appointments, doctors, specialties, patients] = await Promise.all([
     getAppointments(
@@ -231,6 +242,7 @@ export default async function ConsultasList({
       resolvedDoctorId,
       resolvedStartDate,
       resolvedEndDate,
+      resolvedStatus,
     ),
     getDoctors(),
     getSpecialties(),
@@ -241,7 +253,7 @@ export default async function ConsultasList({
     <div className="space-y-6">
       {/* Filtros */}
       <form
-        key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}-${resolvedStartDate || ""}-${resolvedEndDate || ""}`}
+        key={`${resolvedPatientId || ""}-${resolvedSpecialtyId || ""}-${resolvedDoctorId || ""}-${resolvedStartDate || ""}-${resolvedEndDate || ""}-${resolvedStatus || ""}`}
         method="GET"
         action="/consultas"
         className="flex flex-row flex-wrap gap-4 items-end flex flex-col gap-4"
@@ -313,6 +325,28 @@ export default async function ConsultasList({
                   {doctor.nome} - {doctor.crm}
                 </option>
               ))}
+            </select>
+          </div>
+
+          {/* Combobox de Status */}
+          <div className="flex flex-col w-full max-w-sm">
+            <label
+              htmlFor="status"
+              className="mb-1 text-sm font-semibold text-gray-700"
+            >
+              Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              defaultValue={resolvedStatus}
+              className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 shadow-sm"
+            >
+              <option value="">Todos os status...</option>
+              <option value="AGENDADA">Agendada</option>
+              <option value="CONFIRMADA">Confirmada</option>
+              <option value="EM_ATENDIMENTO">Em Atendimento</option>
+              <option value="REALIZADA">Realizada</option>
             </select>
           </div>
 
