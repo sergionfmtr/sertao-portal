@@ -14,7 +14,10 @@ import ConsultationsByDayOfWeekChart, {
 } from "./components/ConsultationsByDayOfWeekChart";
 
 async function getSpecialtyReport(): Promise<SpecialtyReportData[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(
     `${baseUrl}/relatorio/consultas-por-especialidade`,
@@ -35,7 +38,10 @@ async function getSpecialtyReport(): Promise<SpecialtyReportData[]> {
 async function getConsultationStatusReport(): Promise<
   ConsultationStatusData[]
 > {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(`${baseUrl}/relatorio/status-consultas`, {
     cache: "no-store",
@@ -51,7 +57,10 @@ async function getConsultationStatusReport(): Promise<
 }
 
 async function getMonthlyEvolutionReport(): Promise<MonthlyEvolutionData[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(`${baseUrl}/relatorio/evolucao-mensal`, {
     cache: "no-store",
@@ -67,7 +76,10 @@ async function getMonthlyEvolutionReport(): Promise<MonthlyEvolutionData[]> {
 }
 
 async function getTopDoctorsReport(): Promise<TopDoctorsData[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(`${baseUrl}/relatorio/top-medicos`, {
     cache: "no-store",
@@ -81,7 +93,10 @@ async function getTopDoctorsReport(): Promise<TopDoctorsData[]> {
 }
 
 async function getAgeGroupReport(): Promise<AgeGroupData[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(
     `${baseUrl}/relatorio/pacientes-por-faixa-etaria`,
@@ -100,7 +115,10 @@ async function getAgeGroupReport(): Promise<AgeGroupData[]> {
 async function getConsultationsByDayOfWeekReport(): Promise<
   ConsultationsByDayOfWeekData[]
 > {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8080";
 
   const response = await fetch(
     `${baseUrl}/relatorio/consultas-por-dia-semana`,

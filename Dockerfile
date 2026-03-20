@@ -14,6 +14,7 @@ COPY . .
 
 # Define a variável de ambiente para a API com um valor padrão
 ENV API_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=http://localhost:8080
 
 # Expõe a porta do Next.js
 EXPOSE 3000
