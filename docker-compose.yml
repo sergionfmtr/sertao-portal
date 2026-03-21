@@ -6,15 +6,13 @@ services:
     image: clinica-sertao-portal
     container_name: clinica-sertao-portal
     ports:
-      - "3000:80"
+      - "3000:3000"
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/.next
     environment:
       - NODE_ENV=development
-      - NEXT_TELEMETRY_DISABLED=1
-      - API_URL=http://clinica-sertao-api:8080
+      - VITE_API_URL=http://localhost:8080
     restart: unless-stopped
     networks:
       - clinica-network
