@@ -1,0 +1,8 @@
+# Proteger senhas
+.env
+
+# Dados do banco (volume Docker)
+mysql_data/
+
+# Logs
+*.log
